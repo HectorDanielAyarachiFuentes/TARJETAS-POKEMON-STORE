@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon Store</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<STYLE>A {text-decoration: none;} </STYLE>
+<body>
+    <header>
+        <span id="ramoncito">CATALOGO POKÉMON DE TARJETAS</span>
+        <div class="w3-container">
+            <!-- Make sure the source of the audio file "duck_sound.mp3" is valid -->
+            <audio id="audio-player" src="https://www.cjoint.com/doc/23_09/MIwvlqlr3ad_Ven-a-Mí.mp3"></audio>
+          </div>
+    </header>
+
+    <div class="pokemon-container" id="pokemon-container">
+        <!-- Aquí se mostrarán los Pokémon -->
+    </div>
+
+    <footer>
+        <p>&copy; 2023 Pokémon Store</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Obtener referencias a elementos HTML
+        var audioPlayer = document.getElementById("audio-player");
+        var ramoncito = document.getElementById("ramoncito");
+
+        // Agregar un controlador de eventos para el clic en el elemento <span>
+        ramoncito.addEventListener("click", function() {
+            // Si el audio está pausado, reproducirlo; de lo contrario, pausarlo
+            if (audioPlayer.paused) {
+                audioPlayer.play();
+            } else {
+                audioPlayer.pause();
+            }
+        });
+    </script>
+    <style>
+        /* Estilo para el cursor de mano */
+        #ramoncito {
+            cursor: pointer;
+        }
+    </style>
+</body>
+</html>
