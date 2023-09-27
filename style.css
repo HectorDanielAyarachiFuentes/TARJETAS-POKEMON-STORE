@@ -61,3 +61,12 @@ footer {
     transform: translate(-50%, -2px);
     box-shadow: 0 0 10px #00529B;
 }
+    /* Estilo para sacar el link de hipervinculo */
+    A {
+        text-decoration: none;
+    }
+    
+    /* Estilo para el cursor de mano */
+    #ramoncito {
+        cursor: pointer;
+    }

@@ -141,3 +141,7 @@ width: 1rem; /* Ajusta el tamaño de las estrellas para pantallas pequeñas */
 height: 1rem; /* Ajusta el tamaño de las estrellas para pantallas pequeñas */
 }
 }
+ /* Estilo para sacar el link de hipervinculo */
+ A {
+    text-decoration: none;
+}
