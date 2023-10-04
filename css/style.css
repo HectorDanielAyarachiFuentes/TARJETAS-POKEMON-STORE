@@ -3,43 +3,52 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-image: repeating-linear-gradient(284deg, transparent 0px, transparent 1px,rgb(251,251,251) 1px, rgb(251,251,251) 3px),repeating-linear-gradient(14deg, transparent 0px, transparent 1px,rgb(251,251,251) 1px, rgb(251,251,251) 3px),linear-gradient(90deg, rgb(222,222,222),rgb(222,222,222));
+    background-image: repeating-linear-gradient(284deg, transparent 0px, transparent 1px, rgb(251, 251, 251) 1px, rgb(251, 251, 251) 3px),
+        repeating-linear-gradient(14deg, transparent 0px, transparent 1px, rgb(251, 251, 251) 1px, rgb(251, 251, 251) 3px),
+        linear-gradient(90deg, rgb(222, 222, 222), rgb(222, 222, 222));
 }
+
 header {
-    background-image: linear-gradient(90deg, #e60000, #ffcc00, #00529B); /* Combinación de colores Pokémon */
+    background-image: linear-gradient(90deg, #e60000, #ffcc00, #00529B);
     text-align: center;
     padding: 20px 0;
 }
+
 #ramoncito {
-    color:blanchedalmond;
+    color: blanchedalmond;
     font-size: 30px;
 }
+
 footer {
     background-color: #333;
     color: white;
     text-align: center;
     padding: 10px 0;
 }
+
 /* Estilos para el contenedor de productos Pokémon */
 .pokemon-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Diseño responsivo */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px;
     padding: 20px;
 }
+
 .pokemon-card {
     background-color: #f0f0f0;
     border: 1px solid #ccc;
     padding: 10px;
     text-align: center;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
-    position: relative; /* Para controlar la posición del botón */
+    position: relative;
 }
+
 .pokemon-card img {
     max-width: 100%;
     height: auto;
-    margin-bottom: 10px; /* Espacio entre la imagen y el botón */
+    margin-bottom: 10px;
 }
+
 .ver-button {
     background-color: #008CBA;
     color: white;
@@ -53,43 +62,58 @@ footer {
     transform: translateX(-50%);
     transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s;
 }
+
 .pokemon-card:hover {
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4);
 }
+
 .ver-button:hover {
     background-color: #00529B;
     transform: translate(-50%, -2px);
     box-shadow: 0 0 10px #00529B;
 }
-    /* Estilo para sacar el link de hipervinculo */
-    A {
-        text-decoration: none;
-    }
-    /* Estilo para el cursor de mano */
-    #ramoncito {
-        cursor: pointer;
-    }
 
-
-/*POKEDES BARSITO*/
-#pokedex {
-    background-color: #f2f2f2;
-    border: 1px solid #ccc;
-    padding: 20px;
-    text-align: center;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-    width: 350px;
-    margin: 20px auto 0; /* 20px de margen arriba, 0 en los lados y auto en la parte inferior */
-    font-family: Arial, sans-serif;
-    border-radius: 10px;
+/* Estilo para sacar el link de hipervinculo */
+a {
+    text-decoration: none;
 }
 
-
-h1 {
-    font-size: 28px;
-    color: #ff3333; /* Color de Pikachu */
+/* Estilo para el cursor de mano */
+#ramoncito {
+    cursor: pointer;
 }
 
+/* Estilos para pantallas de 320px o menos (móvil) */
+@media (max-width: 320px) {
+    #pokedex {
+        font-size: 16px;
+        padding: 10px;
+        width: 10px;
+
+    }
+
+    #searchbar {
+        width: 100%;
+        padding: 10px;
+    }
+}
+
+/* Estilos para tablet (768px o menos) */
+@media (max-width: 768px) {
+    #pokedex {
+        font-size: 20px;
+        padding: 20px;
+        width: auto;
+
+    }
+
+    #searchbar {
+        width: auto;
+        padding: 10px;
+    }
+}
+
+/* Estilos para el input de búsqueda */
 #searchbar {
     width: 80%;
     padding: 15px;
@@ -101,6 +125,25 @@ h1 {
 }
 
 #searchbar:hover {
-    background-color: #ffcc00; /* Color amarillo Pikachu en hover */
-    transform: scale(1.05); /* Efecto de escala al pasar el mouse */
+    background-color: #ffcc00;
+    transform: scale(1.05);
 }
+
+/*POKEDES BARSITO*/
+#pokedex {
+    background-color: #f2f2f2;
+    border: 1px solid #ccc;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    width: autox;
+    margin: 20px;
+    font-family: Arial, sans-serif;
+    border-radius: 10px;
+}
+
+h1 {
+    font-size: 28px;
+    color: #ff3333;
+}
+
