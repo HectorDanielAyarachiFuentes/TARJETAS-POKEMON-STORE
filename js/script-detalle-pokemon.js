@@ -26,7 +26,8 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(data => {
             const selectedPokemon = data.data.find(p => p.id === pokemonId);
 
-            if (selectedPokemon) {
+            if (selectedPokemon) 
+              {
                 // --- Extracción de datos con valores por defecto ---
                 const hp = selectedPokemon.hp || 'N/A';
                 const rarity = selectedPokemon.rarity || 'Común';
