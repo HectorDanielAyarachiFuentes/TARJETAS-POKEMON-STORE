@@ -7,17 +7,15 @@ document.addEventListener("DOMContentLoaded", function () {
     fetch(jsonURL)
         .then((response) => response.json())
         .then((data) => {
-            // Almacena los datos del JSON en localStorage
-            localStorage.setItem("pokemonData", JSON.stringify(data));
             // Itera a través de los datos de los Pokémon en el JSON
-            data.data.forEach((pokemonData, index) => {
+            data.data.forEach((pokemonData) => {
                 // Crea el contenido HTML con el enlace para ver más detalles
                 const htmlContent = `
                     <div class="pokemon-card">
                         <h2>${pokemonData.name}</h2>
                         <img src="${pokemonData.images.large}" alt="${pokemonData.name} Image">
                         <div class="ver-button-container">
-                            <a href="detalle-pokemon.html?id=${index}" class="ver-button">Ver más</a>
+                            <a href="detalle-pokemon.html?id=${pokemonData.id}" class="ver-button">Ver más</a>
                         </div>
                     </div>
                 `;
