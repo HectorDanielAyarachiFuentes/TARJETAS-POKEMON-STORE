@@ -4,8 +4,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const pokemonId = urlParams.get("id");
     const pokemonDetailsContainer = document.getElementById("pokemon-details-container");
 
+    let unitPrice = 0; // Variable para almacenar el precio unitario
+
+    // Mensaje de carga inicial
+    pokemonDetailsContainer.innerHTML = `<p class="loading-message">Cargando detalles de la carta...</p>`;
+
     if (!pokemonId) {
-        pokemonDetails.innerHTML = `<p>No se ha especificado un Pokémon.</p><a href="index.html" class="back-button">Volver</a>`;
+        pokemonDetailsContainer.innerHTML = `<p class="error-message">No se ha especificado un ID de Pokémon. <a href="index.html" class="header-back-link">← Volver al Catálogo</a></p>`;
         return;
     }
 
@@ -28,6 +33,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 const evolvesFrom = selectedPokemon.evolvesFrom || 'No evoluciona';
                 const flavorText = selectedPokemon.flavorText || 'No disponible.';
                 const cardPrice = selectedPokemon.tcgplayer?.prices?.holofoil?.market || selectedPokemon.tcgplayer?.prices?.normal?.market || 5.00;
+                unitPrice = cardPrice; // Guardamos el precio para usarlo después
 
                 const detalleHtml = `
                 <div class="pokemon-card-detail">
@@ -57,11 +63,14 @@ document.addEventListener("DOMContentLoaded", function () {
                         </div>
                         <div class="purchase-section">
                             <div class="price-display">
-                                Precio: <span id="card-price">$${cardPrice.toFixed(2)}</span>
+                                Precio Unitario: <span id="card-price">$${unitPrice.toFixed(2)}</span>
                             </div>
                             <div class="quantity-control">
                                 <label for="quantity">Cantidad:</label>
                                 <input type="number" id="quantity" min="1" value="1">
+                            </div>
+                            <div class="total-price-display">
+                                <strong>Total: <span id="total-price">$${unitPrice.toFixed(2)}</span></strong>
                             </div>
                             <button class="buy-button" id="buy-button">Comprar</button>
                         </div>
@@ -71,25 +80,33 @@ document.addEventListener("DOMContentLoaded", function () {
                 pokemonDetailsContainer.innerHTML = detalleHtml;
 
                 // --- Añadir Event Listeners ---
-                document.getElementById('buy-button').addEventListener('click', realizarCompra);
+                const quantityInput = document.getElementById('quantity');
+                quantityInput.addEventListener('input', () => updateTotalPrice(unitPrice));
+                document.getElementById('buy-button').addEventListener('click', () => realizarCompra(unitPrice));
 
             } else {
-                pokemonDetailsContainer.innerHTML = `<p class="error-message">Pokémon con ID '${pokemonId}' no encontrado.</p>`;
+                pokemonDetailsContainer.innerHTML = `<p class="error-message">Pokémon con ID '${pokemonId}' no encontrado. <a href="index.html" class="header-back-link">← Volver al Catálogo</a></p>`;
             }
         })
         .catch(error => {
             console.error("Error al cargar los detalles del Pokémon:", error);
-            pokemonDetailsContainer.innerHTML = `<p class="error-message">Error al cargar los detalles del Pokémon. Por favor, inténtalo de nuevo más tarde.</p>`;
+            pokemonDetailsContainer.innerHTML = `<p class="error-message">Error al cargar los detalles del Pokémon. Por favor, inténtalo de nuevo más tarde. <a href="index.html" class="header-back-link">← Volver al Catálogo</a></p>`;
         });
 });
 
-function realizarCompra() {
+function updateTotalPrice(price) {
+    const quantity = Math.max(1, parseFloat(document.getElementById('quantity').value) || 1);
+    const totalPriceElement = document.getElementById('total-price');
+    const total = price * quantity;
+    totalPriceElement.textContent = `$${total.toFixed(2)}`;
+}
+
+function realizarCompra(unitPrice) {
     // Obtener la cantidad y el precio
-    const cantidad = parseFloat(document.getElementById('quantity').value);
-    const precioUnitario = parseFloat(document.getElementById('card-price').textContent.replace('$', ''));
+    const cantidad = Math.max(1, parseFloat(document.getElementById('quantity').value) || 1);
 
     // Calcular el precio total
-    const precioTotal = cantidad * precioUnitario;
+    const precioTotal = cantidad * unitPrice;
 
     // Dar formato al precio total con dos decimales
     const precioTotalFormateado = precioTotal.toFixed(2);
