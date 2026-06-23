@@ -1,19 +1,11 @@
-let currentUnitPrice = 0; // Para el modal
+let currentUnitPrice = 0;
 
 document.addEventListener("DOMContentLoaded", function () {
     const jsonURL = "./json/cards-pokemon-1.json";
     const pokemonContainer = document.getElementById("pokemon-container");
     const searchInput = document.getElementById("searchbar");
-    const modal = document.getElementById("pokemon-modal");
-    
-    // Asignar evento para cerrar modal haciendo clic fuera del contenido
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            closePokemonModal();
-        }
-    });
 
-    window.allPokemonData = []; // Lo hacemos global para acceder desde el modal
+    window.allPokemonData = [];
     let filteredData = [];
     let currentIndex = 0;
     const batchSize = 40;
@@ -37,15 +29,17 @@ document.addEventListener("DOMContentLoaded", function () {
                                 <circle cx="50" cy="50" r="6" fill="#f2f2f2" stroke="#333" stroke-width="2"/>
                             </svg>
                         </div>
-                        <img src="${pokemonData.images.large}" alt="${pokemonData.name} Image" loading="lazy" onload="this.previousElementSibling.style.display='none'; this.style.opacity=1;">
+                        <img src="${pokemonData.images.large}" alt="${pokemonData.name}" loading="lazy" onload="this.previousElementSibling.style.display='none'; this.style.opacity=1;">
                     </div>
                     <div class="ver-button-container">
-                        <button class="ver-button" onclick="showPokemonModal('${pokemonData.id}')">Ver más</button>
+                        <button class="ver-button" onclick="toggleInlineDetails('${pokemonData.id}', this)">Ver más</button>
                     </div>
                 </div>
             `;
         });
-        pokemonContainer.innerHTML += htmlContent;
+        
+        // Usar insertAdjacentHTML evita sobreescribir los nodos del DOM existentes
+        pokemonContainer.insertAdjacentHTML('beforeend', htmlContent);
         currentIndex += count;
     }
 
@@ -62,41 +56,63 @@ document.addEventListener("DOMContentLoaded", function () {
             
             renderCards(batchSize);
 
-            // Scroll event for infinite scroll
             window.addEventListener('scroll', () => {
                 if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 800) {
                     renderCards(batchSize);
                 }
             });
 
-            // Search functionality
-            searchInput.addEventListener("keyup", function() {
-                const query = searchInput.value.toLowerCase();
-                filteredData = window.allPokemonData.filter(p => p.name.toLowerCase().includes(query));
-                pokemonContainer.innerHTML = '';
-                currentIndex = 0;
-                renderCards(batchSize);
-            });
+            // Spotlight Search Functionality
+            if(searchInput) {
+                searchInput.addEventListener("input", function() {
+                    const query = searchInput.value.toLowerCase();
+                    filteredData = window.allPokemonData.filter(p => p.name.toLowerCase().includes(query));
+                    pokemonContainer.innerHTML = '';
+                    currentIndex = 0;
+                    renderCards(batchSize);
+                });
+            }
         })
-        .catch((error) => {
-            console.error("Error al cargar el JSON:", error);
-        });
+        .catch((error) => console.error("Error al cargar el JSON:", error));
 
     var audioPlayer = document.getElementById("audio-player");
     var ramoncito = document.getElementById("ramoncito");
-    ramoncito.addEventListener("click", function () {
-        if (audioPlayer.paused) {
-            audioPlayer.play();
-        } else {
-            audioPlayer.pause();
-        }
-    });
+    if (ramoncito && audioPlayer) {
+        ramoncito.addEventListener("click", function () {
+            if (audioPlayer.paused) audioPlayer.play();
+            else audioPlayer.pause();
+        });
+    }
 });
 
-// Modal Logic
-window.showPokemonModal = function(id) {
-    const modal = document.getElementById("pokemon-modal");
-    const modalBody = document.getElementById("modal-body");
+// Spotlight Logic
+window.toggleSpotlight = function() {
+    const spotlight = document.getElementById("spotlight-search");
+    const input = document.getElementById("searchbar");
+    if (spotlight.classList.contains("hidden")) {
+        spotlight.classList.remove("hidden");
+        document.body.style.overflow = "hidden";
+        setTimeout(() => input.focus(), 100);
+    } else {
+        spotlight.classList.add("hidden");
+        document.body.style.overflow = "auto";
+    }
+}
+
+// Inline Accordion Logic (Google Images style)
+window.toggleInlineDetails = function(id, buttonElement) {
+    const existingPanel = document.getElementById("inline-detail-panel");
+    
+    // Si ya está abierto el mismo panel, lo cerramos
+    if (existingPanel && existingPanel.dataset.id === id) {
+        existingPanel.remove();
+        return;
+    }
+    
+    // Si hay otro panel abierto, lo eliminamos
+    if (existingPanel) {
+        existingPanel.remove();
+    }
     
     const selectedPokemon = window.allPokemonData.find(p => p.id === id);
     if (!selectedPokemon) return;
@@ -109,82 +125,77 @@ window.showPokemonModal = function(id) {
     
     currentUnitPrice = cardPrice;
 
-    modalBody.innerHTML = `
-        <div class="pokemon-card-detail">
-            <div class="detail-image-wrapper">
-                <img class="detail-image" src="${selectedPokemon.images.large}" alt="${selectedPokemon.name}">
+    // Crear el nuevo panel inline
+    const panel = document.createElement('div');
+    panel.id = "inline-detail-panel";
+    panel.className = "expanded-panel";
+    panel.dataset.id = id;
+
+    panel.innerHTML = `
+        <button class="close-panel" onclick="document.getElementById('inline-detail-panel').remove()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+        <div class="panel-layout">
+            <div class="panel-image">
+                <img src="${selectedPokemon.images.large}" alt="${selectedPokemon.name}">
             </div>
-            <div class="detail-info-wrapper">
+            <div class="panel-info">
                 <h2>${selectedPokemon.name}</h2>
-                <p class="description">${flavorText}</p>
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <strong>HP</strong>
-                        <span>${hp}</span>
-                    </div>
-                    <div class="stat-item">
-                        <strong>Tipo</strong>
-                        <span>${selectedPokemon.types ? selectedPokemon.types.join(', ') : 'N/A'}</span>
-                    </div>
-                    <div class="stat-item">
-                        <strong>Rareza</strong>
-                        <span>${rarity}</span>
-                    </div>
-                    <div class="stat-item">
-                        <strong>Evoluciona de</strong>
-                        <span>${evolvesFrom}</span>
-                    </div>
+                <p class="panel-desc">${flavorText}</p>
+                <div class="panel-stats">
+                    <div class="panel-stat"><strong>HP</strong><span>${hp}</span></div>
+                    <div class="panel-stat"><strong>Tipo</strong><span>${selectedPokemon.types ? selectedPokemon.types.join(', ') : 'N/A'}</span></div>
+                    <div class="panel-stat"><strong>Rareza</strong><span>${rarity}</span></div>
+                    <div class="panel-stat"><strong>Evolución</strong><span>${evolvesFrom}</span></div>
                 </div>
-                <div class="purchase-section">
-                    <div class="price-display">
-                        Precio Unitario: <span id="card-price">$${currentUnitPrice.toFixed(2)}</span>
+                <div class="panel-purchase">
+                    <div class="panel-price-row">
+                        <span class="panel-price" id="panel-price">$${currentUnitPrice.toFixed(2)}</span>
+                        <input type="number" id="panel-qty" min="1" value="1" oninput="updatePanelPrice()">
                     </div>
-                    <div class="quantity-control">
-                        <label for="quantity">Cantidad:</label>
-                        <input type="number" id="quantity" min="1" value="1" oninput="updateTotalPrice()">
-                    </div>
-                    <div class="total-price-display">
-                        <strong>Total: <span id="total-price">$${currentUnitPrice.toFixed(2)}</span></strong>
-                    </div>
-                    <button class="buy-button" id="buy-button" onclick="realizarCompra()">Comprar</button>
+                    <button class="panel-buy-btn" id="panel-buy-btn" onclick="realizarCompraPanel()">Añadir al Carrito</button>
                 </div>
             </div>
         </div>
     `;
 
-    modal.classList.remove("hidden");
-    document.body.style.overflow = "hidden"; // Prevent scrolling behind modal
+    // Buscar la tarjeta clickeada
+    const cardElement = buttonElement.closest('.pokemon-card');
+    // Insertar el panel inmediatamente después de la tarjeta.
+    // CSS Grid (grid-column: 1 / -1) hará que ocupe todo el ancho en la fila de abajo.
+    cardElement.insertAdjacentElement('afterend', panel);
+
+    // Scroll suave hacia el panel para que se vea bien
+    setTimeout(() => {
+        panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 50);
 }
 
-window.closePokemonModal = function() {
-    const modal = document.getElementById("pokemon-modal");
-    modal.classList.add("hidden");
-    document.body.style.overflow = "auto";
-}
-
-window.updateTotalPrice = function() {
-    const quantity = Math.max(1, parseFloat(document.getElementById('quantity').value) || 1);
-    const totalPriceElement = document.getElementById('total-price');
+window.updatePanelPrice = function() {
+    const quantity = Math.max(1, parseFloat(document.getElementById('panel-qty').value) || 1);
+    const priceElement = document.getElementById('panel-price');
     const total = currentUnitPrice * quantity;
-    totalPriceElement.textContent = `$${total.toFixed(2)}`;
+    priceElement.textContent = `$${total.toFixed(2)}`;
 }
 
-window.realizarCompra = function() {
-    const cantidad = Math.max(1, parseFloat(document.getElementById('quantity').value) || 1);
+window.realizarCompraPanel = function() {
+    const cantidad = Math.max(1, parseFloat(document.getElementById('panel-qty').value) || 1);
     const precioTotal = (cantidad * currentUnitPrice).toFixed(2);
 
-    const confirmacion = window.confirm(`El precio total es: $${precioTotal}. ¿Deseas realizar la compra?`);
+    const confirmacion = window.confirm(`El precio total es: $${precioTotal}. ¿Proceder con la compra?`);
 
     if (confirmacion) {
-        const botonCompra = document.getElementById('buy-button');
+        const botonCompra = document.getElementById('panel-buy-btn');
         botonCompra.textContent = 'Procesando...';
         botonCompra.disabled = true;
 
         setTimeout(() => {
-            botonCompra.textContent = '¡Comprado!';
+            botonCompra.textContent = '¡Añadido!';
             botonCompra.style.background = '#28a745';
-            window.alert('Producto enviado. ¡Gracias por tu compra, maestro Pokémon!');
-            setTimeout(closePokemonModal, 1500);
+            setTimeout(() => {
+                const panel = document.getElementById('inline-detail-panel');
+                if(panel) panel.remove();
+            }, 1000);
         }, 1000);
     }
 }
