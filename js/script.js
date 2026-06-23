@@ -136,8 +136,10 @@ window.toggleInlineDetails = function(id, buttonElement) {
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </button>
         <div class="panel-layout">
-            <div class="panel-image">
-                <img src="${selectedPokemon.images.large}" alt="${selectedPokemon.name}">
+            <div class="panel-image-wrapper">
+                <div class="panel-image" onmousemove="zoomImage(event, this)" onmouseleave="resetZoom(this)">
+                    <img src="${selectedPokemon.images.large}" alt="${selectedPokemon.name}">
+                </div>
             </div>
             <div class="panel-info">
                 <h2>${selectedPokemon.name}</h2>
@@ -197,5 +199,39 @@ window.realizarCompraPanel = function() {
                 if(panel) panel.remove();
             }, 1000);
         }, 1000);
+    }
+}
+
+// Interactive Mercado Libre Style Magnifier Logic
+window.zoomImage = function(e, container) {
+    const img = container.querySelector('img');
+    const rect = container.getBoundingClientRect();
+    
+    let x = e.clientX - rect.left;
+    let y = e.clientY - rect.top;
+    
+    // Limits
+    if(x < 0) x = 0; if(x > rect.width) x = rect.width;
+    if(y < 0) y = 0; if(y > rect.height) y = rect.height;
+
+    const xPercent = (x / rect.width) * 100;
+    const yPercent = (y / rect.height) * 100;
+    
+    let preview = document.getElementById('zoom-preview-pane');
+    if (!preview) {
+        preview = document.createElement('div');
+        preview.id = 'zoom-preview-pane';
+        container.closest('.panel-layout').appendChild(preview);
+    }
+    
+    preview.style.display = 'block';
+    preview.style.backgroundImage = `url(${img.src})`;
+    preview.style.backgroundPosition = `${xPercent}% ${yPercent}%`;
+}
+
+window.resetZoom = function(container) {
+    const preview = document.getElementById('zoom-preview-pane');
+    if(preview) {
+        preview.style.display = 'none';
     }
 }
