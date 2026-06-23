@@ -18,18 +18,41 @@
         </svg>
     </div>
     <header>
-        <span id="ramoncito">CATALOGO POKÉMON DE TARJETAS</span>
+        <div class="header-content" id="ramoncito">
+            <svg class="header-pokeball" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="45" fill="white" stroke="white" stroke-width="6"/>
+                <path d="M5 50 a45 45 0 0 1 90 0" fill="#E3350D" stroke="white" stroke-width="6"/>
+                <path d="M5 50 h90" stroke="white" stroke-width="6"/>
+                <circle cx="50" cy="50" r="14" fill="white" stroke="white" stroke-width="6"/>
+                <circle cx="50" cy="50" r="6" fill="#111" stroke="none"/>
+            </svg>
+            <h1>CATÁLOGO POKÉMON</h1>
+        </div>
         <div class="w3-container">
             <audio id="audio-player" src="Ven-a-Mí.mp3"></audio>
         </div>
     </header>
-    <div id="pokedex">
-        <h1>Pokedex</h1>
-        <input type="text" id="searchbar" placeholder="Buscar Pokémon">
+    <div class="search-section">
+        <div class="search-wrapper">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="searchbar" placeholder="Busca un Pokémon por nombre...">
+        </div>
     </div>
         <div class="pokemon-container" id="pokemon-container">
             <!-- Aquí se mostrarán los Pokémon -->
         </div>
+    <!-- Modal for Dynamic Pokemon Details -->
+    <div id="pokemon-modal" class="modal hidden">
+        <div class="modal-content glass-effect">
+            <span class="close-modal" onclick="closePokemonModal()">&times;</span>
+            <div id="modal-body">
+                <!-- Dynamic content will be injected here -->
+            </div>
+        </div>
+    </div>
     <footer>
         <p>&copy; 2023 Pokémon Store</p>
     </footer>
